@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Flask Sample</title>
+    </head>
+    <body>
+        <div id="posts">
+            <h1>There are {{ users | length }} users</h1>
+            {% for user in users %}
+            <div>
+                <div>
+                    <div>{{ users[user.id - 1].name }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>
