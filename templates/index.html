@@ -1,17 +1,45 @@
 <html>
-    <head>
-        <title>Flask Sample</title>
-    </head>
-    <body>
-        <div id="posts">
-            <h1>There are {{ users | length }} users</h1>
+<head>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+          rel="stylesheet" id="bootstrap-css">
+    <title>Flask Sample</title>
+</head>
+<body>
+<div>
+    <div class="well">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th style="width: 36px;"></th>
+            </tr>
+            </thead>
+            <tbody>
             {% for user in users %}
-            <div>
-                <div>
-                    <div>{{ users[user.id - 1].name }}</div>
-                </div>
-            </div>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.website }}</td>
+                <td>
+                    <a href="#deleteUser" role="button" data-toggle="delete"><i class="icon-remove"></i></a>
+                </td>
+            </tr>
             {% endfor %}
-        </div>
-    </body>
+            </tbody>
+        </table>
+    </div>
+    <div class="btn-toolbar">
+        <button class="btn">Create User</button>
+        <button class="btn">Update User</button>
+    </div>
+</div>
+</body>
 </html>
