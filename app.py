@@ -1,11 +1,16 @@
-from flask import Flask, render_template
-from . import app
+from flask import render_template
+
 from .tasks import response
+from .model import User
+from . import app
 
 
 @app.route('/', methods=['GET'])
 def index():
+    # response.delay() фоновое не работает
+    response()
+
     return render_template(
         "index.html",
-        users=response(),
+        users=User.query.all()
     )
