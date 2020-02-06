@@ -1,18 +1,21 @@
 from flask import render_template, redirect, request, url_for
 
+from .tasks import response
 from .db import *
 from . import app
 
 
 @app.route('/', methods=['GET'])
 def index():
+    """home page"""
     return render_template("index.html")
 
 
 @app.route('/users', methods=['GET'])
 def users():
+    """main page"""
     # response.delay() фоновое не работает
-    # response()
+    # response() # to do проверка на существование таблицы user в db
 
     return render_template(
         "users.html",
@@ -22,6 +25,7 @@ def users():
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
+    """handling user add event"""
     name = request.form['name']
     username = request.form['username']
     email = request.form['email']
@@ -35,6 +39,7 @@ def add_user():
 
 @app.route('/update_user', methods=['POST'])
 def update_user():
+    """handling user update event"""
     id = request.form['id']
 
     new_id = request.form['new_id']
@@ -51,7 +56,8 @@ def update_user():
 
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
+    """handling user remove event"""
     id = request.form['id']
-    deleteUser(id)
+    removeUser(id)
 
     return redirect(url_for('users'))

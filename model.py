@@ -1,10 +1,8 @@
 from . import db
 
-db.drop_all()
-db.create_all()
-
 
 class User(db.Model):
+    """table with users"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
     username = db.Column(db.String(80), unique=True)

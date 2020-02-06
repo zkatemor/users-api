@@ -7,6 +7,9 @@ import requests
 @celery.task()
 def response():
     """background user request"""
+    deleteAll()
+    createTable()
+
     users_response = requests.get("http://jsonplaceholder.typicode.com/users")
     users_json = users_response.json()
 
