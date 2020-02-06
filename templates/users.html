@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>Users</title>
+    <style type="text/css">
+        h1 {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            font-size: 20px;
+        }
+
+        body {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=text], select {
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table td, table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #ddd;
+        }
+
+        table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #cccccc;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h1>Users Database</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Website</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.website }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h1>Database Operations</h1>
+        <form method="post" action="/add_user">
+            <h2>CREATE</h2>
+            <p>Enter user details</p>
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="username" placeholder="Username">
+            <input type="text" name="email" placeholder="Email">
+            <input type="text" name="phone" placeholder="Phone">
+            <input type="text" name="website" placeholder="Website">
+            <button class="btn">Add User</button>
+        </form>
+        <form method="post" action="/update_user">
+            <label>
+                <h2>UPDATE</h2>
+                <p>Enter user id</p>
+                <input type="text" name="id" placeholder="ID">
+                <p>Enter new user details</p>
+                <input type="text" name="new_id" placeholder="New ID">
+                <input type="text" name="new_name" placeholder="Name">
+                <input type="text" name="new_username" placeholder="Username">
+                <input type="text" name="new_email" placeholder="Email">
+                <input type="text" name="new_phone" placeholder="Phone">
+                <input type="text" name="new_website" placeholder="Website">
+            </label>
+            <button class="btn">Update User</button>
+        </form>
+        <form method="post" action="/delete_user">
+            <h2>DELETE</h2>
+            <p>Enter user id</p>
+            <input type="text" name="id" placeholder="ID">
+            <button class="btn">Delete User by id</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

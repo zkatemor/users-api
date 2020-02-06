@@ -1,5 +1,8 @@
 from . import db
 
+db.drop_all()
+db.create_all()
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,8 +12,7 @@ class User(db.Model):
     phone = db.Column(db.String(80), unique=True)
     website = db.Column(db.String(80), unique=True)
 
-    def __init__(self, id, name, username, email, phone, website):
-        self.id = id
+    def __init__(self, name, username, email, phone, website):
         self.name = name
         self.username = username
         self.email = email
@@ -19,7 +21,3 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
-
-
-db.drop_all()
-db.create_all()
