@@ -4,21 +4,27 @@ from . import db
 import sqlalchemy as sa
 
 
-def addUser(user):
-    """add user to database"""
-    db.session.add(user)
-    db.session.commit()
-
-
-def addPost(post):
-    """add user to database"""
-    db.session.add(post)
+def addResource(resource):
+    """add resourse to database"""
+    db.session.add(resource)
     db.session.commit()
 
 
 def removeUser(id):
     """remove user from database"""
     User.query.filter(User.id == id).delete()
+    db.session.commit()
+
+
+def removePost(id):
+    """remove post from database"""
+    Post.query.filter(Post.id == id).delete()
+    db.session.commit()
+
+
+def removeUserPost(userId):
+    """remove post from database"""
+    Post.query.filter(Post.userId == userId).delete()
     db.session.commit()
 
 

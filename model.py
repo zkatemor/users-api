@@ -24,9 +24,11 @@ class User(db.Model):
 class Post(db.Model):
     """table with posts"""
     id = db.Column(db.Integer, primary_key=True)
-    userId = db.Column(db.Integer)
-    title = db.Column(db.String(120))
-    body = db.Column(db.String(120))
+    title = db.Column(db.String(120), nullable=False)
+    body = db.Column(db.String(120), nullable=False)
+
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('posts', lazy=True))
 
     def __init__(self, userId, title, body):
         self.userId = userId
