@@ -1,17 +1,15 @@
-from . import celery
 from .db import *
 
 import requests
 
 
-@celery.task()
-def response():
-    """background user request"""
+def users_response():
+    """user request"""
     deleteAll()
     createTable()
 
-    users_response = requests.get("http://jsonplaceholder.typicode.com/users")
-    users_json = users_response.json()
+    response = requests.get("http://jsonplaceholder.typicode.com/users")
+    users_json = response.json()
 
     for user in users_json:
         addUser(User(user['name'],
@@ -20,3 +18,20 @@ def response():
                      user['phone'],
                      user['website']))
 
+    return users_json
+
+
+def posts_response():
+    """post request"""
+    deleteAll()
+    createTable()
+
+    response = requests.get("http://jsonplaceholder.typicode.com/posts")
+    posts_json = response.json()
+
+    for post in posts_json:
+        addPost(Post(post['userId'],
+                     post['title'],
+                     post['body']))
+
+    return posts_json

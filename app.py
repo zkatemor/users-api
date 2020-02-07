@@ -1,63 +1,67 @@
-from flask import render_template, redirect, request, url_for
+from flask import redirect, request, url_for, json, jsonify
+from flask_restful import Resource, reqparse
 
-from .tasks import response
+from .tasks import *
 from .db import *
-from . import app
+from . import app, api
 
 
-@app.route('/', methods=['GET'])
-def index():
-    """home page"""
-    return render_template("index.html")
+def get_json(users):
+    json_users = []
+
+    for user in users:
+        dict = {
+            'id': user.id,
+            'name': user.name,
+            'username': user.username,
+            'email': user.email,
+            'phone': user.phone,
+            'website': user.website
+        }
+        json_users.append(dict)
+
+    return json_users
 
 
-@app.route('/users', methods=['GET'])
-def users():
-    """main page"""
-    # response.delay() фоновое не работает
-    # response() # to do проверка на существование таблицы user в db
+class UsersList(Resource):
+    def get(self):
+        users = User.query.all()
+        js = get_json(users)
+        return {'message': 'Success', 'data': js}, 200
 
-    return render_template(
-        "users.html",
-        users=User.query.all()
-    )
+    def post(self):
+        parser = reqparse.RequestParser()
 
+        parser.add_argument('name', required=True)
+        parser.add_argument('username', required=True)
+        parser.add_argument('email', required=True)
+        parser.add_argument('phone', required=True)
+        parser.add_argument('website', required=True)
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
-    """handling user add event"""
-    name = request.form['name']
-    username = request.form['username']
-    email = request.form['email']
-    phone = request.form['phone']
-    website = request.form['website']
+        args = parser.parse_args()
+        addUser(args)
 
-    addUser(User(name, username, email, phone, website))
-
-    return redirect(url_for('users'))
+        users = User.query.all()
+        js = get_json(users)
+        return {'message': 'Success', 'data': js}, 201
 
 
-@app.route('/update_user', methods=['POST'])
-def update_user():
-    """handling user update event"""
-    id = request.form['id']
+class Customer(Resource):
+    def get(self, id):
+        if User.query.filter(User.id == id).count():
+            user = User.query.filter(User.id == id)
+            js = get_json(user)
+            return {'message': 'User found', 'data': js}
+        else:
+            return {'message': 'User not found', 'data': {}}, 404
 
-    new_id = request.form['new_id']
-    name = request.form['new_name']
-    username = request.form['new_username']
-    email = request.form['new_email']
-    phone = request.form['new_phone']
-    website = request.form['new_website']
-
-    update = updateUser(id, new_id, User(name, username, email, phone, website))
-
-    return redirect(url_for('users'))
+    def delete(self, id):
+        if User.query.filter(User.id == id).count():
+            removeUser(id)
+            return '', 204
+        else:
+            return {'message': 'User not found', 'data': {}}, 404
 
 
-@app.route('/delete_user', methods=['POST'])
-def delete_user():
-    """handling user remove event"""
-    id = request.form['id']
-    removeUser(id)
-
-    return redirect(url_for('users'))
+api.add_resource(UsersList, '/users')
+api.add_resource(Customer, '/user/<int:id>')

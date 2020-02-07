@@ -1,4 +1,4 @@
-from .model import User
+from .model import User, Post
 from . import db
 
 import sqlalchemy as sa
@@ -7,6 +7,12 @@ import sqlalchemy as sa
 def addUser(user):
     """add user to database"""
     db.session.add(user)
+    db.session.commit()
+
+
+def addPost(post):
+    """add user to database"""
+    db.session.add(post)
     db.session.commit()
 
 
