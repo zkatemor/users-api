@@ -37,6 +37,27 @@ All responses will have the form
 ]
 ```
 
+### Создать нового пользователя
+
+**Definition**
+
+`POST /users`
+
+**Arguments**
+
+В теле запроса должны быть перечислены поля объекта в формате JSON без дополнительного заворачивания.
+
+- `"name":string`
+- `"username":string`
+- `"email":string`
+- `"phone":string`
+- `"website":string`
+
+**Response**
+
+- `201 Created` on success
+
+
 ### Информация о конкретном пользователе
 
 `GET /user/<int:id>`
