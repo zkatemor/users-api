@@ -1,3 +1,4 @@
+
 import markdown
 
 from flask_restful import Resource, reqparse
@@ -49,9 +50,7 @@ class UsersList(Resource):
 
         addResource(user)
 
-        js = get_users_json([user])
-
-        return {'message': 'Success', 'data': js}, 201
+        return {'message': 'Success', 'data': {}}, 201
 
 
 class Customer(Resource):
@@ -60,7 +59,59 @@ class Customer(Resource):
         if User.query.filter(User.id == id).count():
             user = User.query.filter(User.id == id)
             js = get_users_json(user)
-            return {'message': 'User found', 'data': js}
+            return {'message': 'User found', 'data': js}, 200
+        else:
+            return {'message': 'User not found', 'data': {}}, 404
+
+    def put(self, id):
+        """update user details"""
+        if User.query.filter(User.id == id).count():
+            parser = reqparse.RequestParser()
+
+            parser.add_argument('name', required=True)
+            parser.add_argument('username', required=True)
+            parser.add_argument('email', required=True)
+            parser.add_argument('phone', required=True)
+            parser.add_argument('website', required=True)
+
+            args = parser.parse_args()
+
+            new_user = User(args['name'],
+                            args['username'],
+                            args['email'],
+                            args['phone'],
+                            args['website'])
+
+            updateUser(id, new_user)
+            return {'message': 'User details updated', 'data': {}}, 204
+        else:
+            return {'message': 'User not found', 'data': {}}, 404
+
+    def patch(self, id):
+        """update some user details"""
+        if User.query.filter(User.id == id).count():
+            parser = reqparse.RequestParser()
+
+            parser.add_argument('name', required=False)
+            parser.add_argument('username', required=False)
+            parser.add_argument('email', required=False)
+            parser.add_argument('phone', required=False)
+            parser.add_argument('website', required=False)
+
+            args = parser.parse_args()
+
+            new_user = User(args['name'],
+                            args['username'],
+                            args['email'],
+                            args['phone'],
+                            args['website'])
+
+            updateUser(id, new_user)
+
+            user = User.query.filter(User.id == id).first()
+            js = get_users_json([user])
+
+            return {'message': 'User details updated', 'data': js}, 200
         else:
             return {'message': 'User not found', 'data': {}}, 404
 
@@ -96,9 +147,7 @@ class PostsList(Resource):
 
         addResource(post)
 
-        js = get_posts_json([post])
-
-        return {'message': 'Success', 'data': js}, 201
+        return {'message': 'Success', 'data': {}}, 201
 
 
 class Message(Resource):
@@ -108,6 +157,50 @@ class Message(Resource):
             post = Post.query.filter(Post.id == id)
             js = get_posts_json(post)
             return {'message': 'Post found', 'data': js}
+        else:
+            return {'message': 'Post not found', 'data': {}}, 404
+
+    def put(self, id):
+        """update user details"""
+        if Post.query.filter(Post.id == id).count():
+            parser = reqparse.RequestParser()
+
+            parser.add_argument('userId', required=True)
+            parser.add_argument('title', required=True)
+            parser.add_argument('body', required=True)
+
+            args = parser.parse_args()
+
+            new_post = Post(args['userId'],
+                            args['title'],
+                            args['body'])
+
+            updatePost(id, new_post)
+            return {'message': 'Post details updated', 'data': {}}, 204
+        else:
+            return {'message': 'Post not found', 'data': {}}, 404
+
+    def patch(self, id):
+        """update some post details"""
+        if Post.query.filter(Post.id == id).count():
+            parser = reqparse.RequestParser()
+
+            parser.add_argument('userId', required=False)
+            parser.add_argument('title', required=False)
+            parser.add_argument('body', required=False)
+
+            args = parser.parse_args()
+
+            new_post = Post(args['userId'],
+                            args['title'],
+                            args['body'])
+
+            updatePost(id, new_post)
+
+            post = Post.query.filter(Post.id == id).first()
+            js = get_posts_json([post])
+
+            return {'message': 'Post details updated', 'data': js}, 200
         else:
             return {'message': 'Post not found', 'data': {}}, 404
 
@@ -126,7 +219,7 @@ class UserPost(Resource):
         if Post.query.filter(Post.userId == userId).count():
             post = Post.query.filter(Post.userId == userId)
             js = get_posts_json(post)
-            return {'message': 'Success', 'data': js}
+            return {'message': 'Success', 'data': js}, 200
         else:
             return {'message': 'Posts not found', 'data': {}}, 404
 
@@ -140,26 +233,30 @@ class UserPost(Resource):
 
 
 class Author(Resource):
-    def get(self):
+    def get(self, id):
         """found author of the post by post id"""
-        parser = reqparse.RequestParser()
-
-        parser.add_argument('id', required=True)
-
-        args = parser.parse_args()
-        id = args['id']
-
         user = User.query.join(User.posts, aliased=True) \
             .filter_by(id=id)
 
         js = get_users_json(user)
 
-        return {'message': 'Success', 'data': js}
+        return {'message': 'Success', 'data': js}, 200
 
 
+# get, post запросы для пользователей
 api.add_resource(UsersList, '/users')
+
+# get, put, patch, delete запросы для конкретного пользователя по id
 api.add_resource(Customer, '/user/<int:id>')
+
+# get, post запросы для постов
 api.add_resource(PostsList, '/posts')
+
+# get, put, patch, delete запросы для конкретного поста по id
 api.add_resource(Message, '/post/<int:id>')
-api.add_resource(UserPost, '/user_post/<int:userId>')
-api.add_resource(Author, '/author')
+
+# get, delete запросы для постов конкретного пользователя по id
+api.add_resource(UserPost, '/user/<int:userId>/posts')
+
+# get запрос, узнать автора поста (пользователя) по id
+api.add_resource(Author, '/post/<int:id>/user')

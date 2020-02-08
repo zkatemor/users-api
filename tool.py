@@ -10,10 +10,10 @@ def users_response():
 
     for user in users_json:
         addResource(User(user['name'],
-                     user['username'],
-                     user['email'],
-                     user['phone'],
-                     user['website']))
+                         user['username'],
+                         user['email'],
+                         user['phone'],
+                         user['website']))
 
     return users_json
 
@@ -25,8 +25,8 @@ def posts_response():
 
     for post in posts_json:
         addResource(Post(post['userId'],
-                     post['title'],
-                     post['body']))
+                         post['title'],
+                         post['body']))
 
     return posts_json
 
@@ -55,7 +55,7 @@ def get_posts_json(posts):
         dict = {
             'id': post.id,
             'userId': post.userId,
-            'title': post.id,
+            'title': post.title,
             'body': post.body
         }
         json_posts.append(dict)

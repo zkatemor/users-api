@@ -11,7 +11,8 @@ def addResource(resource):
 
 
 def removeUser(id):
-    """remove user from database"""
+    """remove user (and user's posts) from database"""
+    removeUserPost(id)
     User.query.filter(User.id == id).delete()
     db.session.commit()
 
@@ -23,12 +24,12 @@ def removePost(id):
 
 
 def removeUserPost(userId):
-    """remove post from database"""
+    """remove user's posts from database"""
     Post.query.filter(Post.userId == userId).delete()
     db.session.commit()
 
 
-def updateUser(id, new_id, new_user):
+def updateUser(id, new_user):
     """update info about user"""
     try:
         if new_user.name:
@@ -46,8 +47,23 @@ def updateUser(id, new_id, new_user):
         if new_user.website:
             User.query.filter_by(id=id).update({'website': new_user.website})
 
-        if id != new_id and new_id:
-            User.query.filter_by(id=id).update({'id': new_id})
+        db.session.commit()
+
+    except Exception as e:
+        return str(e)
+
+
+def updatePost(id, new_post):
+    """update info about user"""
+    try:
+        if new_post.userId:
+            Post.query.filter_by(id=id).update({'userId': new_post.userId})
+
+        if new_post.title:
+            Post.query.filter_by(id=id).update({'title': new_post.title})
+
+        if new_post.body:
+            Post.query.filter_by(id=id).update({'body': new_post.body})
 
         db.session.commit()
 
