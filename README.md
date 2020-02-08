@@ -7,7 +7,7 @@ All responses will have the form
 	"message": "Descriptions of what happened",
 	"data": "Mixed type holding the content of the response"
 }
-
+```
 ### Список всех пользователей
 
 `GET /users`
