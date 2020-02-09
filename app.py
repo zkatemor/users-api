@@ -50,7 +50,7 @@ class UsersList(Resource):
 
         addResource(user)
 
-        return {'message': 'Success', 'data': {}}, 201, {'Location': '/users/:' + str(user.id)}
+        return {'message': 'Success', 'data': {}}, 201, {'Location': '/user/:' + str(user.id)}
 
 
 class Customer(Resource):
@@ -147,7 +147,7 @@ class PostsList(Resource):
 
         addResource(post)
 
-        return {'message': 'Success', 'data': {}}, 201, {'Location': '/posts/:' + str(post.id)}
+        return {'message': 'Success', 'data': {}}, 201, {'Location': '/post/:' + str(post.id)}
 
 
 class Message(Resource):
