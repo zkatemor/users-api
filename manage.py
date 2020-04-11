@@ -1,11 +1,9 @@
-
 import markdown
 
 from flask_restful import Resource, reqparse
 
-from .tool import *
-from .db import *
-from . import app, api
+from config.tool import *
+from app import app, api
 
 
 @app.route('/')
@@ -49,7 +47,6 @@ class UsersList(Resource):
                     args['website'])
 
         addResource(user)
-
         return {'message': 'Success', 'data': {}}, 201, {'Location': '/user/:' + str(user.id)}
 
 
@@ -260,3 +257,6 @@ api.add_resource(UserPost, '/user/<int:userId>/posts')
 
 # get запрос, узнать автора поста (пользователя) по id
 api.add_resource(Author, '/post/<int:id>/user')
+
+if __name__ == '__main__':
+    app.run()

@@ -1,5 +1,5 @@
-from .model import User, Post
-from . import db
+from model.model import User, Post
+from app import db
 
 import sqlalchemy as sa
 
@@ -86,4 +86,3 @@ def database_is_empty():
     table_names = sa.inspect(sa.engine).get_table_names()
     is_empty = table_names == []
     return is_empty
-

@@ -1,4 +1,4 @@
-## Usage
+﻿## Usage
 
 All responses will have the form
 
@@ -8,7 +8,7 @@ All responses will have the form
 	"data": "Mixed type holding the content of the response"
 }
 ```
-### Список всех пользователей
+### Users list
 
 `GET /users`
 
@@ -37,28 +37,7 @@ All responses will have the form
 ]
 ```
 
-### Создать нового пользователя
-
-**Definition**
-
-`POST /users`
-
-**Arguments**
-
-В теле запроса должны быть перечислены поля объекта в формате JSON без дополнительного заворачивания.
-
-- `"name":string`
-- `"username":string`
-- `"email":string`
-- `"phone":string`
-- `"website":string`
-
-**Response**
-
-- `201 Created` on success
-
-
-### Информация о конкретном пользователе
+### User's details
 
 `GET /user/<int:id>`
 
@@ -78,7 +57,7 @@ All responses will have the form
 }
 ```
 
-### Удаление пользователя
+### Delete user
 
 **Definition**
 
@@ -89,9 +68,9 @@ All responses will have the form
 - `404 Not Found` if the user does not exist
 - `204 No Data`
 
-> Также происходит удаление всех постов пользователя
+> + delete all user's posts
 
-### Обновление данных о пользователе
+### Update user
 
 **Definition**
 
@@ -99,7 +78,7 @@ All responses will have the form
 
 **Arguments**
 
-В теле запроса должны быть перечислены все поля объекта в формате JSON без дополнительного заворачивания.
+JSON
 
 - `"name":string`
 - `"username":string`
@@ -111,7 +90,7 @@ All responses will have the form
 
 - `204 No Data` on success
 
-### Обновление отдельных данных о пользователе
+### Update some user's detail
 
 **Definition**
 
@@ -119,7 +98,7 @@ All responses will have the form
 
 **Arguments**
 
-В теле запроса должны быть перечислены поля объекта, которые нужно изменить, в формате JSON без дополнительного заворачивания.
+JSON
 
 - `"name":string`
 - `"username":string`
@@ -131,7 +110,7 @@ All responses will have the form
 
 - `200 OK` on success
 
-### Список всех постов
+### Posts list
 
 `GET /posts`
 
@@ -156,7 +135,7 @@ All responses will have the form
 ]
 ```
 
-### Создать новый пост
+### Create new post
 
 **Definition**
 
@@ -164,7 +143,7 @@ All responses will have the form
 
 **Arguments**
 
-В теле запроса должны быть перечислены поля объекта в формате JSON без дополнительного заворачивания.
+JSON
 
 - `"userId":int`
 - `"title":string`
@@ -175,7 +154,7 @@ All responses will have the form
 - `201 Created` on success
 
 
-### Информация о конкретном посте
+### Post's details
 
 `GET /post/<int:id>`
 
@@ -192,7 +171,7 @@ All responses will have the form
     	"body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
 }
 ```
-### Удаление поста
+### Delete post
 
 **Definition**
 
@@ -203,7 +182,7 @@ All responses will have the form
 - `404 Not Found` if the post does not exist
 - `204 No Data`
 
-### Обновление данных о посте
+### Update post's detail
 
 **Definition**
 
@@ -211,7 +190,7 @@ All responses will have the form
 
 **Arguments**
 
-В теле запроса должны быть перечислены все поля объекта в формате JSON без дополнительного заворачивания.
+JSON
 
 - `"userId":int`
 - `"title":string`
@@ -222,7 +201,7 @@ All responses will have the form
 - `204 No Data` on success
 
 
-### Обновление отдельных данных о посте
+### Update some post's detail
 
 **Definition**
 
@@ -230,7 +209,7 @@ All responses will have the form
 
 **Arguments**
 
-В теле запроса должны быть перечислены поля объекта, которые нужно изменить, в формате JSON без дополнительного заворачивания.
+JSON
 
 - `"userId":int`
 - `"title":string`
@@ -240,7 +219,7 @@ All responses will have the form
 
 - `200 OK` on success
 
-### Список постов конкретного пользователя
+### User's posts list
 
 **Definition**
 
@@ -265,7 +244,7 @@ All responses will have the form
  }
 ```
 
-### Удаление всех постов конкретного пользователя
+### Delete user's post
 
 **Definition**
 
@@ -276,7 +255,7 @@ All responses will have the form
 - `404 Not Found` if the post does not exist
 - `204 No Data`
 
-### Выводит автора (пользователя) конкретного поста
+### Post's author
 
 `GET /post/<int:id>/user`
 
