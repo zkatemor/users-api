@@ -1,4 +1,4 @@
-from model.model import User, Post
+from model import User, Post
 from app import db
 
 import sqlalchemy as sa

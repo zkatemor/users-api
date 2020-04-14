@@ -18,14 +18,17 @@ class User(db.Model):
         self.website = website
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.name
+
+    def __str__(self):
+        return self.name
 
 
 class Post(db.Model):
     """table with posts"""
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120), nullable=False)
-    body = db.Column(db.String(120), nullable=False)
+    title = db.Column(db.String(), nullable=False)
+    body = db.Column(db.String(), nullable=False)
 
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('posts', lazy=True))
@@ -37,3 +40,6 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % self.body
+
+    def __str__(self):
+        return self.body

@@ -1,19 +1,41 @@
 import markdown
+from dotenv import load_dotenv
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
+load_dotenv()
 from flask_restful import Resource, reqparse
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 from config.tool import *
-from app import app, api
+from app import app, api, db
+
+migrate = Migrate(app, db)
+manager = Manager(app)
+
+manager.add_command('db', MigrateCommand)
+
+admin = Admin(name='Users dashboard', template_mode='bootstrap3')
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Post, db.session))
+
+admin.init_app(app)
 
 
 @app.route('/')
 def index():
     try:
-        createTable()
-        users_response()
-        posts_response()
+        users = User.query.all()
+        posts = Post.query.all()
+        if not users:
+            users_response()
+        if not posts:
+            posts_response()
     except Exception as e:
         print(str(e))
+        return
 
     """present some documentation"""
     with open('README.md', 'r') as markdown_file:
@@ -259,4 +281,4 @@ api.add_resource(UserPost, '/user/<int:userId>/posts')
 api.add_resource(Author, '/post/<int:id>/user')
 
 if __name__ == '__main__':
-    app.run()
+    manager.run()
