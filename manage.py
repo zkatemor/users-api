@@ -1,3 +1,5 @@
+import os
+
 import markdown
 from dotenv import load_dotenv
 from flask_admin import Admin
@@ -9,8 +11,9 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from config.tool import *
-from app import app, api, db
+from app import create_app, api, db
 
+app = create_app(os.environ['APP_SETTINGS'])
 migrate = Migrate(app, db)
 manager = Manager(app)
 
@@ -28,9 +31,9 @@ admin.init_app(app)
 def index():
     try:
         users = User.query.all()
-        posts = Post.query.all()
         if not users:
             users_response()
+        posts = Post.query.all()
         if not posts:
             posts_response()
     except Exception as e:
@@ -43,11 +46,23 @@ def index():
         return markdown.markdown(content)
 
 
-class UsersList(Resource):
+class UsersView(Resource):
     def get(self):
-        """all users list"""
-        users = User.query.all()
-        js = get_users_json(users)
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', required=False)
+        args = parser.parse_args()
+        id = args['id']
+
+        if id:
+            if User.query.filter(User.id == id).count():
+                user = User.query.filter(User.id == id)
+                js = get_users_json(user)
+                return {'message': 'User found', 'data': js}, 200
+            else:
+                return {'message': 'User not found', 'data': {}}, 404
+        else:
+            users = User.query.all()
+            js = get_users_json(users)
         return {'message': 'Success', 'data': js}, 200
 
     def post(self):
@@ -69,24 +84,26 @@ class UsersList(Resource):
                     args['website'])
 
         addResource(user)
-        return {'message': 'Success', 'data': {}}, 201, {'Location': '/user/:' + str(user.id)}
+        return {'message': 'Success', 'data': {}}, 201, {'Location': '/users/id=' + str(user.id)}
 
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', required=True)
+        args = parser.parse_args()
+        id = args['id']
 
-class Customer(Resource):
-    def get(self, id):
-        """lookup user details"""
         if User.query.filter(User.id == id).count():
-            user = User.query.filter(User.id == id)
-            js = get_users_json(user)
-            return {'message': 'User found', 'data': js}, 200
+            removeUser(id)
+            return {'message': 'User delete', 'data': {}}, 204
         else:
             return {'message': 'User not found', 'data': {}}, 404
 
+
+class UsersUpdateView(Resource):
     def put(self, id):
         """update user details"""
         if User.query.filter(User.id == id).count():
             parser = reqparse.RequestParser()
-
             parser.add_argument('name', required=True)
             parser.add_argument('username', required=True)
             parser.add_argument('email', required=True)
@@ -100,9 +117,11 @@ class Customer(Resource):
                             args['email'],
                             args['phone'],
                             args['website'])
-
-            updateUser(id, new_user)
-            return {'message': 'User details updated', 'data': {}}, 204
+            try:
+                updateUser(id, new_user)
+                return {'message': 'User details updated', 'data': {}}, 204
+            except Exception as e:
+                return {'message': e, 'data': {}}, 505
         else:
             return {'message': 'User not found', 'data': {}}, 404
 
@@ -134,20 +153,24 @@ class Customer(Resource):
         else:
             return {'message': 'User not found', 'data': {}}, 404
 
-    def delete(self, id):
-        """delete user by id"""
-        if User.query.filter(User.id == id).count():
-            removeUser(id)
-            return '', 204
-        else:
-            return {'message': 'User not found', 'data': {}}, 404
 
-
-class PostsList(Resource):
+class PostsView(Resource):
     def get(self):
-        """all posts list"""
-        posts = Post.query.all()
-        js = get_posts_json(posts)
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', required=False)
+        args = parser.parse_args()
+        id = args['id']
+
+        if id:
+            if Post.query.filter(Post.id == id).count():
+                post = Post.query.filter(Post.id == id)
+                js = get_posts_json(post)
+                return {'message': 'Post found', 'data': js}
+            else:
+                return {'message': 'Post not found', 'data': {}}, 404
+        else:
+            posts = Post.query.all()
+            js = get_posts_json(posts)
         return {'message': 'Success', 'data': js}, 200
 
     def post(self):
@@ -166,19 +189,22 @@ class PostsList(Resource):
 
         addResource(post)
 
-        return {'message': 'Success', 'data': {}}, 201, {'Location': '/post/:' + str(post.id)}
+        return {'message': 'Success', 'data': {}}, 201, {'Location': '/posts/id=' + str(post.id)}
 
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', required=True)
+        args = parser.parse_args()
+        id = args['id']
 
-class Message(Resource):
-    def get(self, id):
-        """lookup post details"""
         if Post.query.filter(Post.id == id).count():
-            post = Post.query.filter(Post.id == id)
-            js = get_posts_json(post)
-            return {'message': 'Post found', 'data': js}
+            removePost(id)
+            return {'message': 'Post delete', 'data': {}}, 204
         else:
             return {'message': 'Post not found', 'data': {}}, 404
 
+
+class PostsUpdateView(Resource):
     def put(self, id):
         """update user details"""
         if Post.query.filter(Post.id == id).count():
@@ -223,14 +249,6 @@ class Message(Resource):
         else:
             return {'message': 'Post not found', 'data': {}}, 404
 
-    def delete(self, id):
-        """delete post by id"""
-        if Post.query.filter(Post.id == id).count():
-            removePost(id)
-            return '', 204
-        else:
-            return {'message': 'Post not found', 'data': {}}, 404
-
 
 class UserPost(Resource):
     def get(self, userId):
@@ -262,21 +280,16 @@ class Author(Resource):
         return {'message': 'Success', 'data': js}, 200
 
 
-# get, post запросы для пользователей
-api.add_resource(UsersList, '/users')
-
-# get, put, patch, delete запросы для конкретного пользователя по id
-api.add_resource(Customer, '/user/<int:id>')
-
-# get, post запросы для постов
-api.add_resource(PostsList, '/posts')
-
-# get, put, patch, delete запросы для конкретного поста по id
-api.add_resource(Message, '/post/<int:id>')
-
+# get, post, delete запросы для пользователей
+api.add_resource(UsersView, '/users')
+# put, patch запросы для пользователей
+api.add_resource(UsersUpdateView, '/users/<int:id>')
+# get, post, delete запросы для постов
+api.add_resource(PostsView, '/posts')
+# put, patch запросы для постов
+api.add_resource(PostsUpdateView, '/posts/<int:id>')
 # get, delete запросы для постов конкретного пользователя по id
 api.add_resource(UserPost, '/user/<int:userId>/posts')
-
 # get запрос, узнать автора поста (пользователя) по id
 api.add_resource(Author, '/post/<int:id>/user')
 
