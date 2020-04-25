@@ -39,7 +39,10 @@ All responses will have the form
 
 ### User's details
 
-`GET /user/<int:id>`
+`GET /users`
+
+**Params**
+- `id` - int
 
 **Response**
 
@@ -61,7 +64,10 @@ All responses will have the form
 
 **Definition**
 
-`DELETE /user/<id>`
+`DELETE /users`
+
+**Params**
+- `id` - int
 
 **Response**
 
@@ -74,7 +80,7 @@ All responses will have the form
 
 **Definition**
 
-`PUT /user/<int:id>`
+`PUT /users/<int:id>`
 
 **Arguments**
 
@@ -94,7 +100,7 @@ JSON
 
 **Definition**
 
-`PATCH /user/<int:id>`
+`PATCH /users/<int:id>`
 
 **Arguments**
 
@@ -156,7 +162,10 @@ JSON
 
 ### Post's details
 
-`GET /post/<int:id>`
+`GET /posts`
+
+**Params**
+- `id` - int
 
 **Response**
 
@@ -175,7 +184,10 @@ JSON
 
 **Definition**
 
-`DELETE /post/<int:id>`
+`DELETE /posts`
+
+**Params**
+- `id` - int
 
 **Response**
 
@@ -186,7 +198,7 @@ JSON
 
 **Definition**
 
-`PUT /post/<int:id>`
+`PUT /posts/<int:id>`
 
 **Arguments**
 
@@ -205,7 +217,7 @@ JSON
 
 **Definition**
 
-`PATCH /post/<int:id>`
+`PATCH /posts/<int:id>`
 
 **Arguments**
 
@@ -223,7 +235,7 @@ JSON
 
 **Definition**
 
-`GET /user/<int:userId>/posts`
+`GET /users/<int:userId>/posts`
 
 **Response**
 
@@ -248,7 +260,7 @@ JSON
 
 **Definition**
 
-`DELETE /user/<int:userId>/posts`
+`DELETE /users/<int:userId>/posts`
 
 **Response**
 
@@ -257,7 +269,7 @@ JSON
 
 ### Post's author
 
-`GET /post/<int:id>/user`
+`GET /posts/<int:id>/user`
 
 **Response**
 
